@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lightcloud"
+version = '0.0.1'
+description = ""
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+    { name = "Зорин Никита Евгеньевич", email = "nikita00zorinnn@mail.ru" },
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python",
+    "Typing :: Typed",
+]
+dependencies = [
+    "fastapi==109.2",
+    "pydantic==2.6.1",
+    "python-multipart==0.0.9",
+    "httpx==0.26.0",
+]
+
+
+[project.optional-dependencies]
+test = [
+    "pytest~=8",
+]
+mypy = [
+    "mypy~=1",
+    "mypy-extensions~=1",
+]
+
+[tool.mypy]
+strict = true
+
+[tool.pytest.ini_options]
+addopts = [
+    "--strict-config",
+    "--strict-markers",
+]
