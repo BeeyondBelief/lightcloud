@@ -4,7 +4,6 @@ from fastapi.responses import JSONResponse
 from lightcloud.api.controllers import download_file, upload_file
 
 
-
 app = FastAPI()
 
 app.include_router(upload_file.router)
