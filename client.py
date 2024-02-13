@@ -1,10 +1,10 @@
 import abc
-import io
-import os
-import tempfile
-import time
-from pathlib import Path
 import hashlib
+import time
+import uuid
+from pathlib import Path
+from typing import IO
+
 import httpx
 import uuid
 from itertools import cycle
@@ -107,14 +107,12 @@ class CloudClient:
                 method='GET',
                 url=self.DOWNLOAD_FILE.format(filepath=filepath.as_posix()),
             )
-            tmp_file = tempfile.NamedTemporaryFile(delete=False)
-            with stream as response, tmp_file as f:
+            with stream as response, open(to, 'wb') as f:
                 response: httpx.Response
                 for chunk in response.iter_bytes(self.CHUNK_SIZE):
                     self._write_chunk(f, chunk)
-            os.rename(tmp_file.name, to)
 
-    def _write_chunk(self, f: io.FileIO, chunk: bytes) -> None:
+    def _write_chunk(self, f: IO[bytes], chunk: bytes) -> None:
         for transformer in self._receive_transformers:
             chunk = transformer.transform(chunk)
         f.write(chunk)
