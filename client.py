@@ -6,8 +6,7 @@ from pathlib import Path
 from typing import IO
 
 import httpx
-import uuid
-from itertools import cycle
+import numpy as np
 
 
 class Transformer(abc.ABC):
@@ -18,10 +17,11 @@ class Transformer(abc.ABC):
 
 
 def _cycle_xor(data: bytes, key: bytes) -> bytes:
-    result = bytearray()
-    for b1, b2 in zip(data, cycle(key)):
-        result.append(b1 ^ b2)
-    return bytes(result)
+    key_array = np.frombuffer(key * (len(data) // len(key) + 1), dtype=np.uint8)[:len(data)]
+    return np.bitwise_xor(
+        np.frombuffer(data, dtype=np.uint8),
+        key_array
+    ).tobytes()
 
 
 class EncryptTransformer(Transformer):
@@ -131,5 +131,5 @@ if __name__ == '__main__':
 
     client.upload_file(file)
     s = time.perf_counter()
-    client.download_file(file, to=Path('bob.pdf'))
+    client.download_file(file, to=Path('/dev/null'))
     print(time.perf_counter()-s)
