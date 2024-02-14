@@ -20,7 +20,8 @@ def main():
     token = uuid.UUID('91b26497-9389-4f72-b4ff-53ba4913e801')
     client = CloudClient('http://127.0.0.1:8000', token)
 
-    random_text = 'This is a random text'
+    random_text = ('Poem about clouds 🌥️ with bunch of words and stuff and '
+                   'russian text: Привет, мир! 🌍')
     path = Path(tempfile.gettempdir()) / 'random.txt'
 
     path.write_text(random_text)
