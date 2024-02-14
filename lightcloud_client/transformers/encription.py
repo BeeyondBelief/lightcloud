@@ -19,11 +19,5 @@ class EncryptTransformer(Transformer):
     def transform(self, data: bytes) -> bytes:
         return _cycle_xor(data, self._encryption_signature)
 
-
-class DecryptTransformer(Transformer):
-
-    def __init__(self, encryption_signature: bytes):
-        self._encryption_signature = encryption_signature
-
-    def transform(self, data: bytes) -> bytes:
+    def reverse(self, data: bytes) -> bytes:
         return _cycle_xor(data, self._encryption_signature)

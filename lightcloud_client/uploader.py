@@ -1,10 +1,10 @@
 import abc
 import hashlib
-from typing import IO
+from typing import IO, Sequence
 
 import httpx
 
-from lightcloud_client.transformers.transformer import Transformer
+from lightcloud_client.transformers.transformer import ForwardTransformer
 
 
 class UploadContentMixin(abc.ABC):
@@ -14,7 +14,7 @@ class UploadContentMixin(abc.ABC):
             chunk_size: int = 1 << 20,
             hash_hit_url: str = '/resources/resource/{resource_id}/hit/{hash}',
             upload_chunk_url: str = '/resources/resource/{resource_id}/chunk/{hash}',
-            transformers: list[Transformer] | None = None
+            transformers: Sequence[ForwardTransformer] | None = None
     ) -> None:
         self._chunk_size = chunk_size
         self._hash_hit_url = hash_hit_url
