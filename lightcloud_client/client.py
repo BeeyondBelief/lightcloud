@@ -7,15 +7,14 @@ from typing import IO
 import httpx
 
 from lightcloud_client.transformers.transformer import Transformer
+from lightcloud_client.uploader import UploadContentMixin
 
 
 class CloudClient:
 
     CHUNK_SIZE = 1 << 20  # 1 MB
 
-    HASH_HIT = '/upload/file/hash/{hash}/path/{filepath}'
-    UPLOAD_CHUNK = '/upload/file/hash/{hash}/path/{filepath}'
-    DOWNLOAD_FILE = '/download/file/{filepath}'
+    DOWNLOAD_FILE = '/resources/resource/{resource_id}'
 
     def __init__(self, server_addr: str, token: uuid.UUID):
         self._token = token
@@ -31,6 +30,9 @@ class CloudClient:
         )
         self._send_transformers = []
         self._receive_transformers = []
+        self._upload_mixin = UploadContentMixin(
+            transformers=self._send_transformers
+        )
 
     def send_transformers(self, *t: Transformer) -> 'CloudClient':
         self._send_transformers.extend(t)
@@ -41,38 +43,18 @@ class CloudClient:
         return self
 
     @staticmethod
-    def _get_chunk_hash(chunk: bytes) -> str:
-        return hashlib.md5(chunk).hexdigest()
+    def _get_file_identity(filepath: Path) -> str:
+        return filepath.as_posix().replace('/', '_')
 
     def upload_file(self, filepath: Path) -> None:
         with httpx.Client(**self._client_conf) as client, filepath.open('rb') as f:
-            while chunk := f.read(self.CHUNK_SIZE):
-                content_hash = self._get_chunk_hash(chunk)
-                if self._is_hash_hits(client, content_hash, filepath):
-                    continue
-                for transformer in self._send_transformers:
-                    chunk = transformer.transform(chunk)
-                self._send_chunk(client, content_hash, chunk, filepath)
-
-    def _is_hash_hits(self, client: httpx.Client, content_hash: str, filepath: Path) -> bool:
-        hit_request = client.get(
-            self.HASH_HIT.format(hash=content_hash, filepath=filepath.as_posix())
-        )
-        if hit_request.status_code >= 300:
-            raise PermissionError()
-        return hit_request.status_code == 200
-
-    def _send_chunk(self, client: httpx.Client, content_hash: str, content: bytes, filepath: Path):
-        client.post(
-            self.UPLOAD_CHUNK.format(hash=content_hash, filepath=filepath.as_posix()),
-            content=content
-        )
+            self._upload_mixin.upload_content(client, f, self._get_file_identity(filepath))
 
     def download_file(self, filepath: Path, to: Path) -> None:
         with httpx.Client(**self._client_conf) as client:
             stream = client.stream(
                 method='GET',
-                url=self.DOWNLOAD_FILE.format(filepath=filepath.as_posix()),
+                url=self.DOWNLOAD_FILE.format(resource_id=self._get_file_identity(filepath)),
             )
             with stream as response, open(to, 'wb') as f:
                 response: httpx.Response

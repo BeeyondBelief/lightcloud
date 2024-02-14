@@ -1,13 +1,13 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from lightcloud.api.controllers import download_file, upload_file
-
+from lightcloud.api.controllers import download_router, hash_router, upload_router
 
 app = FastAPI()
 
-app.include_router(upload_file.router)
-app.include_router(download_file.router)
+app.include_router(upload_router.upload_router)
+app.include_router(download_router.download_router)
+app.include_router(hash_router.hash_router)
 
 
 @app.exception_handler(PermissionError)
