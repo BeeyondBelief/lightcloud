@@ -1,3 +1,4 @@
+import io
 import uuid
 from pathlib import Path
 
@@ -48,7 +49,17 @@ class CloudClient:
         with httpx.Client(**self._client_conf) as client, filepath.open('rb') as f:
             self._upload_mixin.upload_content(client, f, self._get_file_identity(filepath))
 
+    def upload_content(self, content: bytes, identity: str) -> None:
+        with httpx.Client(**self._client_conf) as client:
+            self._upload_mixin.upload_content(client, io.BytesIO(content), identity)
+
     def download_file(self, filepath: Path, to: Path) -> None:
         with httpx.Client(**self._client_conf) as client, open(to, 'wb') as f:
             self._download_mixin.download_content(client, f, self._get_file_identity(filepath))
 
+    def download_content(self, identity: str) -> bytes:
+        content = io.BytesIO()
+        with httpx.Client(**self._client_conf) as client:
+            self._download_mixin.download_content(client, content, identity)
+        content.seek(0)
+        return content.read()
