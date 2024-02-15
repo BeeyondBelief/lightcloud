@@ -13,8 +13,6 @@ class CloudClient:
 
     CHUNK_SIZE = 1 << 20  # 1 MB
 
-    DOWNLOAD_FILE = '/resources/resource/{resource_id}'
-
     def __init__(self, server_addr: str, token: uuid.UUID):
         self._token = token
         self._client_conf = dict(
