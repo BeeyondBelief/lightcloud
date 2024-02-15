@@ -11,7 +11,7 @@ from lightcloud_client.uploader import UploadContentMixin
 
 class CloudClient:
 
-    CHUNK_SIZE = 1 << 20  # 1 MB
+    CHUNK_SIZE = 5 << 20
 
     def __init__(self, server_addr: str, token: uuid.UUID):
         self._token = token
