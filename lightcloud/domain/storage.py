@@ -4,27 +4,25 @@ from typing import Generator
 class SlackFile:
     def __init__(self, filepath: str):
         self.filepath = filepath
-        self._parts: dict[str, SlackFilePart] = {}
+        self._parts: list[SlackFilePart] = []
 
     def create_part(self, part_hash: str) -> 'SlackFilePart':
         part = SlackFilePart(part_hash)
-        self._parts[part_hash] = part
+        self._parts.append(part)
         return part
 
-    def has_part(self, chunk_hash: str) -> bool:
-        try:
-            return chunk_hash in self._parts
-        except KeyError:
-            return False
+    def scan(self) -> Generator[str, None, None]:
+        for part in reversed(self._parts):
+            yield part.fingerprint
 
     def iter(self) -> Generator[bytes, None, None]:
-        for part in self._parts.values():
+        for part in self._parts:
             yield from part.iter()
 
 
 class SlackFilePart:
-    def __init__(self, part_hash: str):
-        self.hash = part_hash
+    def __init__(self, fingerprint: str):
+        self.fingerprint = fingerprint
         self._chunks = []
 
     def add_chunk(self, chunk: bytes) -> None:

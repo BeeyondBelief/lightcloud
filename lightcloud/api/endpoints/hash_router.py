@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Response
+from pydantic import BaseModel
 
 from lightcloud.api.endpoints.upload_router import storage
 from lightcloud.api.utils import AuthorizedDepends
@@ -6,14 +7,13 @@ from lightcloud.api.utils import AuthorizedDepends
 hash_router = APIRouter(prefix='/resources')
 
 
-@hash_router.get('/resource/{resource_id}/hit/{chunk_hash}', dependencies=[AuthorizedDepends])
-async def check_cache_hit(resource_id: str, chunk_hash: str):
-    resource = storage.get(resource_id)
-    response = Response(status_code=204)
-    if resource is None:
-        return response
+class DigestResponse(BaseModel):
+    blocks: list[str]
 
-    if resource.has_part(chunk_hash):
-        response.status_code = 200
-        return response
-    return response
+
+@hash_router.get('/resource/{resource_id}/digest', dependencies=[AuthorizedDepends])
+async def get_digest(resource_id: str):
+    resource = storage.get(resource_id)
+    if resource is None:
+        return Response(status_code=404)
+    return DigestResponse(blocks=[part for part in resource.scan()])
