@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Response
 
-from lightcloud.api.controllers.upload_router import storage
+from lightcloud.api.endpoints.upload_router import storage
 from lightcloud.api.utils import AuthorizedDepends
 
 hash_router = APIRouter(prefix='/resources')
