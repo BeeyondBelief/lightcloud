@@ -53,11 +53,13 @@ class CloudClient:
 
     def download_file(self, filepath: Path, to: Path) -> None:
         with httpx.Client(**self._client_conf) as client, open(to, 'wb') as f:
-            self._download_mixin.download_content(client, f, self._get_file_identity(filepath))
+            download_stream = self._download_mixin.download(client, self._get_file_identity(filepath))
+            for part in download_stream:
+                f.write(part)
 
     def download_content(self, identity: str) -> bytes:
-        content = io.BytesIO()
+        content = b''
         with httpx.Client(**self._client_conf) as client:
-            self._download_mixin.download_content(client, content, identity)
-        content.seek(0)
-        return content.read()
+            for part in self._download_mixin.download(client, identity):
+                content += part
+        return content

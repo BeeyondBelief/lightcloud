@@ -1,5 +1,5 @@
 import abc
-from typing import IO, Sequence
+from typing import Generator, Sequence
 
 import httpx
 
@@ -18,12 +18,11 @@ class DownloaderMixin(abc.ABC):
         self._download_chunk_url = download_chunk_url
         self._receive_transformers = transformers or []
 
-    def download_content(self, client: httpx.Client, to: IO[bytes], identity: str, ) -> None:
+    def download(self, client: httpx.Client, identity: str) -> Generator[bytes, None, None]:
         """
         Downloads a content from the server
 
         :param client: Client to use for the download
-        :param to: Where to write the content
         :param identity: Identity of the content
         """
         stream = client.stream(
@@ -31,8 +30,7 @@ class DownloaderMixin(abc.ABC):
             url=self._download_chunk_url.format(resource_id=identity),
         )
         with stream as response:
-            response: httpx.Response
             for chunk in response.iter_bytes(self._chunk_size):
                 for transformer in self._receive_transformers:
                     chunk = transformer.reverse(chunk)
-                to.write(chunk)
+                yield chunk
