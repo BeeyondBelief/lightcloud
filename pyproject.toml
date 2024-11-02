@@ -17,7 +17,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "fastapi==109.2",
+    "fastapi==0.109.2",
     "pydantic==2.6.1",
     "python-multipart==0.0.9",
     "httpx==0.26.0",
@@ -26,12 +26,10 @@ dependencies = [
 
 
 [project.optional-dependencies]
-test = [
-    "pytest~=8",
-]
-mypy = [
-    "mypy~=1",
-    "mypy-extensions~=1",
+dev = [
+    "pytest~=8.3",
+    "mypy~=1.11",
+    "mypy-extensions~=1.0",
 ]
 
 [tool.mypy]
