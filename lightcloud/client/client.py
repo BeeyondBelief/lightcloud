@@ -7,7 +7,7 @@ import httpx
 from lightcloud.client.downloader import DownloaderMixin
 from lightcloud.client.transformers.transformer import Transformer
 from lightcloud.client.uploader import UploadContentMixin
-
+from lightcloud.const import LIGHT_CLOUD_TOKEN_NAME
 
 class CloudClient:
 
@@ -19,11 +19,8 @@ class CloudClient:
             base_url=server_addr,
             timeout=httpx.Timeout(None, read=180.0),
             headers={
-                'Authorization': 'token',
+                LIGHT_CLOUD_TOKEN_NAME: f'token {token}',
             },
-            cookies={
-                'light-cloud-token': str(token)
-            }
         )
         self._transformers = []
         self._upload_mixin = UploadContentMixin(
