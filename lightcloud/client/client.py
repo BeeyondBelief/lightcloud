@@ -4,9 +4,9 @@ from pathlib import Path
 
 import httpx
 
-from lightcloud_client.downloader import DownloaderMixin
-from lightcloud_client.transformers.transformer import Transformer
-from lightcloud_client.uploader import UploadContentMixin
+from lightcloud.client.downloader import DownloaderMixin
+from lightcloud.client.transformers.transformer import Transformer
+from lightcloud.client.uploader import UploadContentMixin
 
 
 class CloudClient:

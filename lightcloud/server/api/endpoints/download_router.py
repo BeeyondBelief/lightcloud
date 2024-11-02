@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from starlette.responses import JSONResponse, StreamingResponse
 
-from lightcloud.api.endpoints.upload_router import storage
+from lightcloud.server.api.endpoints.upload_router import storage
 
 download_router = APIRouter(prefix='/resources')
 

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Response
 from pydantic import BaseModel
 
-from lightcloud.api.endpoints.upload_router import storage
-from lightcloud.api.utils import AuthorizedDepends
+from lightcloud.server.api.endpoints.upload_router import storage
+from lightcloud.server.api.utils import AuthorizedDepends
 
 hash_router = APIRouter(prefix='/resources')
 

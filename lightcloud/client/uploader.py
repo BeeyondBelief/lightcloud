@@ -4,7 +4,7 @@ from typing import IO, Sequence
 
 import httpx
 
-from lightcloud_client.transformers.transformer import ForwardTransformer
+from lightcloud.client.transformers.transformer import ForwardTransformer
 
 
 class UploadContentMixin(abc.ABC):

@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import Depends
 from starlette.requests import Request
 
-from lightcloud.const import LIGHT_CLOUD_TOKEN_NAME
+from lightcloud.server.const import LIGHT_CLOUD_TOKEN_NAME
 
 
 @dataclasses.dataclass(frozen=True)

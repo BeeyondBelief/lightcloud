@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from fastapi.requests import Request
 
-from lightcloud.api.utils import AuthorizedDepends
-from lightcloud.domain.storage import SlackFile
+from lightcloud.server.api.utils import AuthorizedDepends
+from lightcloud.server.domain.storage import SlackFile
 
 upload_router = APIRouter(prefix='/resources')
 storage: dict[str, 'SlackFile'] = {}

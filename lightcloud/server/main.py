@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from lightcloud.api.endpoints import download_router, hash_router, upload_router
+from lightcloud.server.api.endpoints import download_router, hash_router, upload_router
 
 app = FastAPI()
 

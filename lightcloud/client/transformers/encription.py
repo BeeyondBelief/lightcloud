@@ -1,6 +1,6 @@
 import numpy as np
 
-from lightcloud_client.transformers.transformer import Transformer
+from lightcloud.client.transformers.transformer import Transformer
 
 
 def _cycle_xor(data: bytes, key: bytes) -> bytes:

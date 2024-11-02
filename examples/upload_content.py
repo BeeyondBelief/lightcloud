@@ -2,11 +2,11 @@ import threading
 import time
 import uuid
 
-from lightcloud_client.client import CloudClient
+from lightcloud.client.client import CloudClient
 
 
 def run_server_in_background():
-    from lightcloud.main import app
+    from lightcloud.server.main import app
     import uvicorn
     uvicorn.run(app, host='127.0.0.1', port=8000)
 

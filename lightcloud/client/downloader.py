@@ -3,7 +3,7 @@ from typing import Generator, Sequence
 
 import httpx
 
-from lightcloud_client.transformers.transformer import BackwardTransformer
+from lightcloud.client.transformers.transformer import BackwardTransformer
 
 
 class DownloaderMixin(abc.ABC):
